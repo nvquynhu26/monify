@@ -1,14 +1,11 @@
-# Monify — My Finance Manager (v2)
+# Monify — My Finance Manager (GitHub Pages Ready)
 
-Clean Mobile-First Fintech Web App inspired by **MISA Money Keeper** & **TOSS**, built strictly on the 6-color Monify palette (`#FAF9F8`, `#150811`, `#AAAAFF`, `#623B70`, `#531245`, `#BEB8CD`) and ready for **GitHub Pages**.
+## 1. Deploy to GitHub Pages
+1. Upload `index.html`, `styles.css`, `app.js`, and your `logo1.png` into the root folder of your GitHub repository.
+2. Go to **Settings -> Pages -> Build and deployment -> Source: Deploy from a branch (`main` / `/root`)**.
+3. Open your live GitHub Pages URL on mobile or desktop.
 
-## Highlights
-- **Default English UI** with instant 6-language switcher inside **Settings (top right)**: English, 한국어, Русский, Tiếng Việt, Oʻzbekcha, Беларуская.
-- **Pre-connected Backend**: Google Apps Script Web App URL is hardcoded directly in `config.js` and `app.js` (silent background sync + instant `localStorage` fallback). No manual Google Sheets sync UI in the app.
-- **iPhone-Fitted Layout**: All buttons, cards, and segmented controls stay strictly inside the iPhone frame with `>=15px` margins on all four sides.
-- **Top-Right Controls**: Refresh FX and Settings/Account buttons positioned cleanly at the top right.
-
-## Deploy on GitHub Pages
-1. Upload `index.html`, `styles.css`, `app.js`, `config.js`, and your `logo1.png` to the root of your GitHub repository (`main` branch).
-2. Go to **Settings → Pages** → Branch: **`main`**, Folder: **`/ (root)`** → **Save**.
-3. Sign in with demo account `monify` / `828282` or register a new account.
+## 2. Demo Test Account
+- **Username:** `monify`
+- **Password:** `828282`
+- Preloaded with 5/6 multi-currency wallets (KRW, VND, USD) and 2 bank savings deposits (KRW 10,000,000 & VND 200,000,000).

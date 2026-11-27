@@ -2,632 +2,871 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#FAF9F8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Monify — My Finance Manager</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;600;700&family=Inder&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <!-- Google Fonts: Inder & Archivo Narrow (fallback for Arial Narrow) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;600;700&family=Inder&display=swap" rel="stylesheet">
+  <!-- Leaflet CSS for Global ATM & FX Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Custom Styles -->
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <div class="desktop-stage">
-    <div class="phone-shell" id="app-shell">
-
-      <!-- 1. LAUNCH SCREEN (2s, #FFFFFF, ./logo1.png) -->
-      <section id="screen-launch" class="screen screen-launch active" aria-label="Launch Screen">
-        <div class="launch-center">
-          <img
-            src="./logo1.png"
-            alt="Monify"
-            class="launch-logo"
-            onerror="this.style.display='none'; document.getElementById('launch-fallback').style.display='flex';"
-          />
-          <div id="launch-fallback" class="launch-fallback" style="display:none;">
-            <div class="brand-mark">M</div>
-            <h1 class="brand-wordmark">Monify</h1>
-            <p class="brand-tagline">My Finance Manager</p>
+  <div id="app-root" class="app-shell">
+    <!-- 1. LAUNCH SCREEN (2 seconds, pure white #FFFFFF, ./logo1.png) -->
+    <div id="launch-screen" class="screen launch-screen active">
+      <div class="launch-content">
+        <img src="./logo1.png" alt="Monify Logo" class="launch-logo" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';" />
+        <div id="fallback-logo" class="fallback-logo" style="display:none;">
+          <div class="logo-mark">
+            <svg width="56" height="56" viewBox="0 0 64 64" fill="none">
+              <rect width="64" height="64" rx="18" fill="#150811"/>
+              <path d="M16 42L26 22L32 34L38 22L48 42" stroke="#AAAAFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M44 18L50 22L44 26" stroke="#FAF9F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M20 46L14 42L20 38" stroke="#BEB8CD" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
-          <div class="launch-bar-track"><div class="launch-bar-fill"></div></div>
+          <h1 class="brand-title">Monify</h1>
+          <p class="brand-sub">My Finance Manager</p>
         </div>
-      </section>
-
-      <!-- 2. LOGIN SCREEN -->
-      <section id="screen-login" class="screen screen-auth" aria-label="Sign In">
-        <div class="auth-scroll">
-          <div class="auth-hero">
-            <div class="mini-logo">
-              <img src="./logo1.png" alt="Monify" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-              <span class="mini-logo-fallback" style="display:none;">M</span>
-            </div>
-            <h1 class="auth-title">Monify</h1>
-            <p class="auth-sub" data-i18n="auth_tagline">Smart multi-currency finance manager</p>
-          </div>
-
-          <form id="form-login" class="mk-card auth-form" novalidate>
-            <h2 class="form-title" data-i18n="login_title">Sign In</h2>
-
-            <div class="field">
-              <label for="login-username" data-i18n="username">Username</label>
-              <input id="login-username" type="text" placeholder="monify" autocomplete="username" required />
-            </div>
-
-            <div class="field">
-              <label for="login-password" data-i18n="password">Password</label>
-              <div class="pw-wrap">
-                <input id="login-password" type="password" placeholder="••••••" autocomplete="current-password" required />
-                <button type="button" class="icon-inline-btn" data-toggle-pw="login-password" aria-label="Toggle password">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </button>
-              </div>
-            </div>
-
-            <p id="login-error" class="form-error" hidden></p>
-
-            <button type="submit" class="toss-btn toss-btn-primary toss-btn-full" data-i18n="login_btn">Sign In</button>
-            <button type="button" class="toss-btn toss-btn-soft toss-btn-full" id="btn-fill-demo" data-i18n="demo_btn">Quick Demo (monify)</button>
-
-            <p class="auth-switch">
-              <span data-i18n="no_account">Don't have an account?</span>
-              <button type="button" class="text-link-btn" id="btn-goto-register" data-i18n="register_now">Sign Up</button>
-            </p>
-          </form>
-
-          <div class="demo-chip data-text">
-            <span>Demo:</span> <strong>monify</strong> / <strong>828282</strong>
-          </div>
-        </div>
-      </section>
-
-      <!-- 3. REGISTER SCREEN (Separate page, 5 fields) -->
-      <section id="screen-register" class="screen screen-auth" aria-label="Sign Up">
-        <div class="auth-scroll">
-          <div class="auth-topbar">
-            <button type="button" class="top-icon-btn" id="btn-back-login" aria-label="Back">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
-            </button>
-            <span class="topbar-label" data-i18n="register_title">Create Account</span>
-            <span style="width:36px;"></span>
-          </div>
-
-          <form id="form-register" class="mk-card auth-form" novalidate>
-            <div class="field">
-              <label for="reg-username" data-i18n="username">Username</label>
-              <input id="reg-username" type="text" placeholder="e.g. alex_kr" autocomplete="username" required />
-            </div>
-
-            <div class="field">
-              <label for="reg-fullname" data-i18n="full_name">Full Name</label>
-              <input id="reg-fullname" type="text" placeholder="Alex Kim" autocomplete="name" required />
-            </div>
-
-            <div class="field">
-              <label for="reg-dob" data-i18n="dob">Date of Birth</label>
-              <input id="reg-dob" type="date" required />
-            </div>
-
-            <div class="field">
-              <label for="reg-password" data-i18n="password">Password</label>
-              <div class="pw-wrap">
-                <input id="reg-password" type="password" placeholder="Min. 6 characters" autocomplete="new-password" required />
-                <button type="button" class="icon-inline-btn" data-toggle-pw="reg-password" aria-label="Toggle password">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </button>
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="reg-email" data-i18n="email">Email Address</label>
-              <input id="reg-email" type="email" placeholder="alex@email.com" autocomplete="email" required />
-            </div>
-
-            <p id="register-error" class="form-error" hidden></p>
-
-            <button type="submit" class="toss-btn toss-btn-velvet toss-btn-full" data-i18n="register_btn">Create Account</button>
-
-            <p class="auth-switch">
-              <span data-i18n="have_account">Already have an account?</span>
-              <button type="button" class="text-link-btn" id="btn-goto-login" data-i18n="login_btn">Sign In</button>
-            </p>
-          </form>
-        </div>
-      </section>
-
-      <!-- 4. MAIN APP SHELL -->
-      <section id="screen-main" class="screen screen-main" aria-label="Monify">
-        <!-- Top Header: Title left, Refresh + Settings strictly top right -->
-        <header class="app-header">
-          <div class="header-left">
-            <div class="header-title-row">
-              <h1 class="header-title" id="header-tab-title">Home</h1>
-              <span id="travel-mode-badge" class="badge-deep" hidden>Travel</span>
-            </div>
-            <span class="header-sub data-text" id="header-user-meta">ID #1 · monify</span>
-          </div>
-          <div class="header-right">
-            <button type="button" class="top-icon-btn" id="btn-refresh-fx" title="Refresh" aria-label="Refresh">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-            </button>
-            <button type="button" class="top-icon-btn" id="btn-open-settings" title="Settings" aria-label="Settings">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33h.09a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v.09a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-            </button>
-          </div>
-        </header>
-
-        <!-- Main Scrollable Viewport (>= 15px margin on all sides) -->
-        <main class="main-scroll" id="main-scroll">
-
-          <!-- ==================== TAB 1: HOME ==================== -->
-          <div id="tab-home" class="tab-panel active">
-            <!-- Money Keeper + Toss Hero Balance Card -->
-            <div class="hero-card" id="hero-asset-card">
-              <div class="hero-row-top">
-                <div class="hero-label-group">
-                  <span class="hero-label" data-i18n="total_balance">Total Balance</span>
-                  <button type="button" class="mini-eye-btn" id="btn-toggle-hide-bal" aria-label="Hide/Show balance">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                  </button>
-                </div>
-                <button type="button" class="hero-style-btn" id="btn-toggle-hero-grad" data-i18n="theme_btn">Theme</button>
-              </div>
-
-              <div class="hero-amount data-text" id="total-asset-value">₩ 0</div>
-              <div class="hero-sub data-text" id="total-asset-breakdown">Wallets: 0 · Savings: 0</div>
-
-              <div class="seg-row" id="base-currency-pills">
-                <button type="button" class="seg-chip active" data-curr="KRW">KRW</button>
-                <button type="button" class="seg-chip" data-curr="USD">USD</button>
-                <button type="button" class="seg-chip" data-curr="VND">VND</button>
-                <button type="button" class="seg-chip" data-curr="USDT">USDT</button>
-              </div>
-              <div class="fx-footnote data-text" id="fx-updated-label">Stablecoin FX · Syncing...</div>
-            </div>
-
-            <!-- My Wallets (Money Keeper Clean List) -->
-            <div class="mk-card">
-              <div class="mk-card-head">
-                <div class="mk-head-left">
-                  <h2 class="mk-title" data-i18n="my_wallets">My Wallets</h2>
-                  <span class="count-tag data-text" id="wallet-counter">5/6</span>
-                </div>
-                <button type="button" class="toss-btn toss-btn-soft toss-btn-sm" id="btn-add-wallet" data-i18n="add_wallet">+ Add</button>
-              </div>
-              <div id="wallet-list" class="mk-list"></div>
-            </div>
-
-            <!-- Savings & Deposits -->
-            <div class="mk-card">
-              <div class="mk-card-head">
-                <h2 class="mk-title" data-i18n="savings_deposits">Savings & Deposits</h2>
-                <button type="button" class="toss-btn toss-btn-soft toss-btn-sm" id="btn-add-saving" data-i18n="add_saving">+ Add</button>
-              </div>
-              <div id="saving-list" class="mk-list"></div>
-            </div>
-
-            <!-- Visa Balance Guard -->
-            <div class="mk-card mk-card-velvet">
-              <div class="mk-card-head">
-                <div>
-                  <span class="eyebrow-light" data-i18n="visa_eyebrow">VISA PROTECTION</span>
-                  <h2 class="mk-title-light" data-i18n="visa_title">Visa Balance Guard</h2>
-                </div>
-                <button type="button" class="toss-btn toss-btn-snow toss-btn-sm" id="btn-edit-visa" data-i18n="edit_btn">Edit</button>
-              </div>
-              <div class="stat-pair">
-                <div>
-                  <span class="stat-label-light" data-i18n="visa_min">Minimum Reserve</span>
-                  <strong class="stat-val-light data-text" id="visa-min-display">₩ 10,000,000</strong>
-                </div>
-                <div class="text-right">
-                  <span class="stat-label-light" data-i18n="visa_current">Current Total (KRW)</span>
-                  <strong class="stat-val-light data-text" id="visa-avail-display">₩ 0</strong>
-                </div>
-              </div>
-              <div class="bar-track bar-track-dark">
-                <div class="bar-fill bar-powder" id="visa-progress-bar" style="width:80%;"></div>
-              </div>
-              <p class="status-note-dark" id="visa-status-box"></p>
-            </div>
-
-            <!-- $50,000 FX Limit & Tax Radar -->
-            <div class="mk-card mk-card-dark">
-              <div class="mk-card-head">
-                <div>
-                  <span class="eyebrow-powder" data-i18n="tax_eyebrow">KOREA FX & TAX RADAR</span>
-                  <h2 class="mk-title-light" data-i18n="fx50k_title">$50,000 Annual Limit</h2>
-                </div>
-                <button type="button" class="toss-btn toss-btn-primary toss-btn-sm" id="btn-edit-fx50k" data-i18n="update_btn">Update</button>
-              </div>
-              <div class="stat-pair data-text">
-                <span class="stat-label-light"><span data-i18n="used_label">Used:</span> <strong id="fx50k-used-display" style="color:#FAF9F8;">$0.00</strong></span>
-                <span class="stat-label-light"><span data-i18n="limit_label">Limit:</span> <strong style="color:#AAAAFF;">$50,000</strong></span>
-              </div>
-              <div class="bar-track bar-track-dark">
-                <div class="bar-fill bar-powder" id="fx50k-bar" style="width:12%;"></div>
-              </div>
-              <div class="tax-strip">
-                <span class="badge-deep" data-i18n="may_badge">May</span>
-                <p data-i18n="tax_reminder">Korea 3.3% freelance income tax refund filing window.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- ==================== TAB 2: TRANSFER ==================== -->
-          <div id="tab-transfer" class="tab-panel">
-            <!-- Clean 4-item Segmented Control (fits strictly inside iPhone) -->
-            <div class="seg-control" id="transfer-subtabs">
-              <button type="button" class="seg-btn active" data-subtab="remit" data-i18n="sub_compare">Compare</button>
-              <button type="button" class="seg-btn" data-subtab="qr" data-i18n="sub_qr">QR Pay</button>
-              <button type="button" class="seg-btn" data-subtab="split" data-i18n="sub_split">Split</button>
-              <button type="button" class="seg-btn" data-subtab="atm" data-i18n="sub_atm">ATM/FX</button>
-            </div>
-
-            <!-- 05. International Transfer Comparison -->
-            <div class="subtab-pane active" id="subtab-remit">
-              <div class="mk-card">
-                <h2 class="mk-title" style="margin-bottom:12px;" data-i18n="remit_title">1-Tap Remittance Compare</h2>
-                <div class="grid-2">
-                  <div class="field">
-                    <label for="remit-amount" data-i18n="send_amount">Amount</label>
-                    <input id="remit-amount" type="number" value="1000000" min="1000" step="10000" class="data-text" />
-                  </div>
-                  <div class="field">
-                    <label for="remit-pair" data-i18n="currency_route">Route</label>
-                    <select id="remit-pair">
-                      <option value="KRW_VND">KRW → VND</option>
-                      <option value="KRW_USD">KRW → USD</option>
-                      <option value="USD_VND">USD → VND</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="field" style="margin-top:10px;">
-                  <label for="remit-source-wallet" data-i18n="from_wallet">From Wallet</label>
-                  <select id="remit-source-wallet"></select>
-                </div>
-              </div>
-              <div id="remit-compare-list" class="stack"></div>
-            </div>
-
-            <!-- 06. Multi-Currency QR -->
-            <div class="subtab-pane" id="subtab-qr">
-              <div class="mk-card mk-card-velvet center-stack">
-                <span class="eyebrow-light" data-i18n="my_qr">MY PERSONAL QR</span>
-                <h2 class="mk-title-light" id="qr-owner-name">monify</h2>
-                <div class="qr-frame">
-                  <canvas id="my-qr-canvas" width="156" height="156"></canvas>
-                </div>
-                <span class="stat-label-light data-text" id="qr-payload-text">MONIFY://UID:1/monify</span>
-              </div>
-
-              <div class="mk-card">
-                <h2 class="mk-title" data-i18n="qr_sim_title">Instant QR Transfer</h2>
-                <p class="mk-sub" data-i18n="qr_sim_desc">Pay in KRW; recipient receives VND, USD, or USDT instantly.</p>
-                <div class="field" style="margin-top:10px;">
-                  <label for="qr-recipient" data-i18n="recipient">Recipient</label>
-                  <input id="qr-recipient" type="text" value="minji_kr" />
-                </div>
-                <div class="grid-2" style="margin-top:10px;">
-                  <div class="field">
-                    <label for="qr-send-amount" data-i18n="pay_krw">Pay (KRW)</label>
-                    <input id="qr-send-amount" type="number" value="50000" min="1000" class="data-text" />
-                  </div>
-                  <div class="field">
-                    <label for="qr-recv-curr" data-i18n="recv_in">Receive in</label>
-                    <select id="qr-recv-curr">
-                      <option value="VND">VND</option>
-                      <option value="USD">USD</option>
-                      <option value="USDT">USDT</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="soft-banner data-text" id="qr-converted-preview">0 VND</div>
-                <button type="button" class="toss-btn toss-btn-primary toss-btn-full" id="btn-simulate-qr-send" data-i18n="qr_send_btn">Scan & Send Now</button>
-              </div>
-            </div>
-
-            <!-- 07. Group Bill Split -->
-            <div class="subtab-pane" id="subtab-split">
-              <div class="mk-card">
-                <div class="mk-card-head">
-                  <h2 class="mk-title" data-i18n="split_title">Multi-Currency Bill Split</h2>
-                  <button type="button" class="toss-btn toss-btn-soft toss-btn-sm" id="btn-reset-split" data-i18n="clear_btn">Clear</button>
-                </div>
-                <div class="grid-2">
-                  <div class="field">
-                    <label for="split-payer" data-i18n="payer">Paid by</label>
-                    <input id="split-payer" type="text" placeholder="Yumi" />
-                  </div>
-                  <div class="field">
-                    <label for="split-note" data-i18n="item_note">Item</label>
-                    <input id="split-note" type="text" placeholder="Dinner / Taxi" />
-                  </div>
-                </div>
-                <div class="grid-2" style="margin-top:10px;">
-                  <div class="field">
-                    <label for="split-amount" data-i18n="amount">Amount</label>
-                    <input id="split-amount" type="number" placeholder="50000" class="data-text" />
-                  </div>
-                  <div class="field">
-                    <label for="split-curr" data-i18n="currency">Currency</label>
-                    <select id="split-curr">
-                      <option value="KRW">KRW</option>
-                      <option value="USD">USD</option>
-                      <option value="VND">VND</option>
-                    </select>
-                  </div>
-                </div>
-                <button type="button" class="toss-btn toss-btn-velvet toss-btn-full" id="btn-add-split-item" style="margin-top:12px;" data-i18n="add_bill_btn">+ Add Expense</button>
-              </div>
-
-              <div class="mk-card">
-                <h3 class="mk-subtitle" data-i18n="expenses_list">Group Expenses</h3>
-                <div id="split-items-list" class="mk-list"></div>
-              </div>
-
-              <div class="mk-card mk-card-dark">
-                <span class="eyebrow-powder" data-i18n="settlement_eyebrow">SETTLEMENT</span>
-                <h2 class="mk-title-light" data-i18n="who_owes_whom">Who Owes Whom</h2>
-                <div id="split-settlement-list" class="stack-tight" style="margin-top:10px;"></div>
-              </div>
-            </div>
-
-            <!-- 08. Global ATM & FX Finder -->
-            <div class="subtab-pane" id="subtab-atm">
-              <div class="seg-control" id="atm-filter-pills">
-                <button type="button" class="seg-btn active" data-atm-filter="all" data-i18n="filter_all">All</button>
-                <button type="button" class="seg-btn" data-atm-filter="atm" data-i18n="filter_atm">Global ATM</button>
-                <button type="button" class="seg-btn" data-atm-filter="fx" data-i18n="filter_fx">FX Booth</button>
-              </div>
-              <div class="mk-card map-card">
-                <div id="seoul-map" class="map-box"></div>
-              </div>
-              <div id="atm-list" class="stack"></div>
-            </div>
-          </div>
-
-          <!-- ==================== TAB 3: SPEND ==================== -->
-          <div id="tab-spend" class="tab-panel">
-            <!-- Toss-style 2-button action row -->
-            <div class="grid-2">
-              <button type="button" class="toss-btn toss-btn-primary" id="btn-open-add-tx" data-i18n="add_tx_btn">+ Add Record</button>
-              <button type="button" class="toss-btn toss-btn-velvet" id="btn-open-ocr" data-i18n="ai_scan_btn">AI Receipt Scan</button>
-            </div>
-
-            <!-- 10. Money Keeper Style Cashflow Overview -->
-            <div class="mk-card">
-              <div class="mk-card-head">
-                <h2 class="mk-title" data-i18n="cashflow_title">Cashflow Overview</h2>
-                <span class="badge-deep" id="cashflow-spike-badge" hidden data-i18n="above_avg">Above Avg</span>
-              </div>
-              <div class="seg-control seg-5" id="cashflow-period-pills">
-                <button type="button" class="seg-btn" data-period="1W">1W</button>
-                <button type="button" class="seg-btn active" data-period="1M">1M</button>
-                <button type="button" class="seg-btn" data-period="3M">3M</button>
-                <button type="button" class="seg-btn" data-period="6M">6M</button>
-                <button type="button" class="seg-btn" data-period="1Y">1Y</button>
-              </div>
-              <div class="kpi-strip data-text">
-                <div class="kpi-cell">
-                  <span data-i18n="income">Income</span>
-                  <strong id="cf-income-val">₩ 0</strong>
-                </div>
-                <div class="kpi-cell">
-                  <span data-i18n="expense">Expense</span>
-                  <strong id="cf-expense-val">₩ 0</strong>
-                </div>
-                <div class="kpi-cell">
-                  <span data-i18n="net">Net</span>
-                  <strong id="cf-net-val">₩ 0</strong>
-                </div>
-              </div>
-              <div id="cashflow-chart" class="chart-box"></div>
-              <p class="mk-sub" id="cashflow-insight-text" style="margin-top:6px;"></p>
-            </div>
-
-            <!-- 09. Customizable 6 Jars -->
-            <div class="mk-card">
-              <div class="mk-card-head">
-                <div>
-                  <h2 class="mk-title" data-i18n="jars_title">6-Jar Budget</h2>
-                  <span class="mk-sub" data-i18n="jars_sub">Customize names & percentages</span>
-                </div>
-                <span class="count-tag data-text" id="jars-total-pct">100%</span>
-              </div>
-              <div id="jars-list" class="stack-tight"></div>
-              <div class="grid-2" style="margin-top:12px;">
-                <button type="button" class="toss-btn toss-btn-soft toss-btn-sm" id="btn-autobalance-jars" data-i18n="balance_100">Auto 100%</button>
-                <button type="button" class="toss-btn toss-btn-velvet toss-btn-sm" id="btn-save-jars" data-i18n="save_jars">Save Jars</button>
-              </div>
-            </div>
-
-            <!-- Recent Transactions (Money Keeper Clean Rows) -->
-            <div class="mk-card">
-              <div class="mk-card-head">
-                <h2 class="mk-title" data-i18n="recent_tx">Recent Transactions</h2>
-                <span class="count-tag data-text" id="tx-count-label">0</span>
-              </div>
-              <div id="tx-list" class="mk-list"></div>
-            </div>
-
-            <!-- 12. Subscriptions -->
-            <div class="mk-card mk-card-dark">
-              <div class="mk-card-head">
-                <div>
-                  <span class="eyebrow-powder" data-i18n="subs_eyebrow">RECURRING BILLS</span>
-                  <h2 class="mk-title-light" data-i18n="subs_title">Subscriptions</h2>
-                </div>
-                <button type="button" class="toss-btn toss-btn-snow toss-btn-sm" id="btn-add-sub" data-i18n="add_btn">+ Add</button>
-              </div>
-              <div class="dark-summary-row data-text">
-                <span data-i18n="monthly_total">Monthly total</span>
-                <strong id="subs-monthly-total">₩ 0</strong>
-              </div>
-              <div id="subs-list" class="stack-tight"></div>
-            </div>
-          </div>
-
-          <!-- ==================== TAB 4: GOALS ==================== -->
-          <div id="tab-goals" class="tab-panel">
-            <!-- 14. Travel / Home-Visit Mode -->
-            <div class="mk-card mk-card-velvet">
-              <div class="mk-card-head">
-                <div>
-                  <span class="eyebrow-light" data-i18n="travel_eyebrow">SEPARATE BUDGET</span>
-                  <h2 class="mk-title-light" data-i18n="travel_title">Home-Visit & Travel Mode</h2>
-                </div>
-                <label class="switch" aria-label="Travel Mode">
-                  <input type="checkbox" id="toggle-travel-mode" />
-                  <span class="slider"></span>
-                </label>
-              </div>
-              <p class="stat-label-light" data-i18n="travel_desc">Keep trip expenses separate from your monthly Korea living statistics.</p>
-
-              <div id="travel-mode-details" class="travel-box" hidden>
-                <div class="grid-2">
-                  <div class="field field-on-dark">
-                    <label for="travel-trip-name" data-i18n="trip_name">Trip Name</label>
-                    <input id="travel-trip-name" type="text" value="Home Visit" />
-                  </div>
-                  <div class="field field-on-dark">
-                    <label for="travel-budget-krw" data-i18n="trip_budget">Budget (KRW)</label>
-                    <input id="travel-budget-krw" type="number" value="1500000" class="data-text" />
-                  </div>
-                </div>
-                <div class="stat-pair data-text" style="margin-top:10px;">
-                  <span class="stat-label-light"><span data-i18n="spent_label">Spent:</span> <strong id="travel-spent-display" style="color:#FAF9F8;">₩ 0</strong></span>
-                  <span class="stat-label-light" id="travel-remain-display">Left: ₩ 1,500,000</span>
-                </div>
-                <div class="bar-track bar-track-dark">
-                  <div class="bar-fill bar-powder" id="travel-progress-bar" style="width:0%;"></div>
-                </div>
-                <button type="button" class="toss-btn toss-btn-snow toss-btn-full" id="btn-add-travel-tx" style="margin-top:10px;" data-i18n="add_travel_tx">+ Log Trip Expense</button>
-              </div>
-            </div>
-
-            <!-- 13. Smart Goals -->
-            <div class="mk-card">
-              <div class="mk-card-head">
-                <div>
-                  <h2 class="mk-title" data-i18n="goals_title">Savings Goals</h2>
-                  <span class="mk-sub" data-i18n="goals_sub">With Stablecoin auto-hedging tips</span>
-                </div>
-                <button type="button" class="toss-btn toss-btn-primary toss-btn-sm" id="btn-add-goal" data-i18n="add_goal">+ Goal</button>
-              </div>
-              <div id="goals-list" class="stack"></div>
-            </div>
-          </div>
-
-          <!-- ==================== TAB 5: AI ASSISTANT ==================== -->
-          <div id="tab-ai" class="tab-panel">
-            <!-- Financial Health Score -->
-            <div class="mk-card mk-card-dark">
-              <div class="mk-card-head">
-                <div>
-                  <span class="eyebrow-powder" data-i18n="ai_eyebrow">FINANCIAL DIAGNOSTICS</span>
-                  <h2 class="mk-title-light" data-i18n="health_title">Financial Health Score</h2>
-                </div>
-                <span class="badge-powder data-text" id="health-grade-pill">Good</span>
-              </div>
-
-              <div class="score-row">
-                <div class="ring-wrap">
-                  <svg class="ring-svg" viewBox="0 0 120 120">
-                    <circle cx="60" cy="60" r="48" stroke="#623B70" stroke-width="10" fill="none" opacity="0.45"/>
-                    <circle id="health-ring-circle" cx="60" cy="60" r="48" stroke="#AAAAFF" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="302" stroke-dashoffset="60" transform="rotate(-90 60 60)"/>
-                  </svg>
-                  <div class="ring-val data-text">
-                    <strong id="health-score-num">82</strong>
-                    <span>/100</span>
-                  </div>
-                </div>
-                <div class="score-bars data-text" id="health-breakdown"></div>
-              </div>
-
-              <div class="tips-card">
-                <span class="eyebrow-powder" data-i18n="weekly_tips">WEEKLY ACTION TIPS</span>
-                <ul id="ai-weekly-tips" class="tips-ul"></ul>
-              </div>
-            </div>
-
-            <!-- Target FX Alerts -->
-            <div class="mk-card">
-              <h2 class="mk-title" data-i18n="fx_alert_title">Target FX Rate Alerts</h2>
-              <p class="mk-sub" data-i18n="fx_alert_sub">Get notified when exchange rates hit your target.</p>
-              <div class="grid-2" style="margin-top:10px;">
-                <div class="field">
-                  <label for="alert-pair" data-i18n="pair">Pair</label>
-                  <select id="alert-pair">
-                    <option value="KRW_VND">1 KRW → VND</option>
-                    <option value="USD_KRW">1 USD → KRW</option>
-                    <option value="USDT_KRW">1 USDT → KRW</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="alert-target" data-i18n="target_rate">Target</label>
-                  <input id="alert-target" type="number" step="0.1" placeholder="18.5" class="data-text" />
-                </div>
-              </div>
-              <button type="button" class="toss-btn toss-btn-primary toss-btn-full" id="btn-add-fx-alert" style="margin-top:10px;" data-i18n="set_alert_btn">+ Set Rate Alert</button>
-
-              <div id="fx-alerts-list" class="mk-list" style="margin-top:12px;"></div>
-            </div>
-
-            <!-- Disclaimer -->
-            <div class="disclaimer-note" data-i18n="ai_disclaimer">
-              Analysis is for reference only based on historical data and does not guarantee future exchange rate predictions.
-            </div>
-          </div>
-
-        </main>
-
-        <!-- Bottom Navigation Bar (5 Tabs, Toss + Money Keeper style) -->
-        <nav class="bottom-nav" aria-label="Primary Navigation">
-          <button type="button" class="nav-btn active" data-tab="home">
-            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9.5z"/></svg>
-            <span data-i18n="nav_home">Home</span>
-          </button>
-          <button type="button" class="nav-btn" data-tab="transfer">
-            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
-            <span data-i18n="nav_transfer">Transfer</span>
-          </button>
-          <button type="button" class="nav-btn" data-tab="spend">
-            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-            <span data-i18n="nav_spend">Spend</span>
-          </button>
-          <button type="button" class="nav-btn" data-tab="goals">
-            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
-            <span data-i18n="nav_goals">Goals</span>
-          </button>
-          <button type="button" class="nav-btn" data-tab="ai">
-            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/></svg>
-            <span data-i18n="nav_ai">AI</span>
-          </button>
-        </nav>
-      </section>
-
-      <!-- BOTTOM SHEET MODAL & TOAST -->
-      <div id="modal-backdrop" class="modal-backdrop" hidden>
-        <div class="modal-sheet" role="dialog" aria-modal="true">
-          <div class="modal-handle"></div>
-          <div class="modal-head">
-            <h3 id="modal-title">Title</h3>
-            <button type="button" class="top-icon-btn" id="modal-close" aria-label="Close">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            </button>
-          </div>
-          <div id="modal-body" class="modal-body"></div>
+        <div class="launch-loader">
+          <div class="launch-bar"></div>
         </div>
       </div>
-
-      <div id="toast" class="toast" hidden></div>
     </div>
+
+    <!-- 2. LOGIN SCREEN -->
+    <div id="login-screen" class="screen auth-screen">
+      <div class="auth-top-bar">
+        <span class="mini-brand">Monify</span>
+        <select id="auth-lang-select" class="pill-select" aria-label="Language">
+          <option value="en">EN · English</option>
+          <option value="ko">KO · 한국어</option>
+          <option value="vi">VI · Tiếng Việt</option>
+          <option value="ru">RU · Русский</option>
+          <option value="be">BE · Беларуская</option>
+          <option value="uz">UZ · Oʻzbekcha</option>
+        </select>
+      </div>
+
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="auth-badge">STABLECOIN-ANCHORED FINTECH</div>
+          <h2 data-i18n="login_title">Welcome back</h2>
+          <p data-i18n="login_subtitle">Sign in to sync your multi-currency wallets &amp; Google Sheets ledger.</p>
+        </div>
+
+        <form id="login-form" class="auth-form">
+          <div class="form-group">
+            <label for="login-username" data-i18n="username">Username</label>
+            <input type="text" id="login-username" placeholder="monify" required autocomplete="username" />
+          </div>
+
+          <div class="form-group">
+            <label for="login-password" data-i18n="password">Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="login-password" placeholder="••••••" required autocomplete="current-password" />
+              <button type="button" id="toggle-login-pw" class="eye-btn" aria-label="Toggle Password">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div id="login-error" class="error-msg" style="display:none;"></div>
+
+          <button type="submit" id="login-submit-btn" class="btn-primary-pill" data-i18n="login_btn">Sign In</button>
+        </form>
+
+        <div class="test-hint-box">
+          <span class="hint-tag">DEMO</span>
+          <span class="num-font">ID: <strong>monify</strong> &nbsp;|&nbsp; PW: <strong>828282</strong></span>
+          <button type="button" id="quick-fill-demo" class="btn-xs-pill">Auto-fill</button>
+        </div>
+
+        <div class="auth-footer">
+          <span data-i18n="no_account">Don't have an account?</span>
+          <button type="button" id="go-register-btn" class="link-btn" data-i18n="register_now">Register now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. REGISTER SCREEN (Dedicated Page with 5 required fields) -->
+    <div id="register-screen" class="screen auth-screen">
+      <div class="auth-top-bar">
+        <button type="button" id="back-to-login-btn" class="icon-pill-btn">← <span data-i18n="back">Back</span></button>
+        <span class="mini-brand">Monify ID</span>
+      </div>
+
+      <div class="auth-card">
+        <div class="auth-header">
+          <h2 data-i18n="register_title">Create Account</h2>
+          <p data-i18n="register_subtitle">Auto-assigns a sequential User_ID synced directly to Google Sheets.</p>
+        </div>
+
+        <form id="register-form" class="auth-form">
+          <div class="form-group">
+            <label for="reg-username" data-i18n="username">Username</label>
+            <input type="text" id="reg-username" placeholder="e.g. alex_seoul" required />
+          </div>
+
+          <div class="form-group">
+            <label for="reg-fullname" data-i18n="fullname">Full Name</label>
+            <input type="text" id="reg-fullname" placeholder="e.g. Kim Minji / Nguyen Van A" required />
+          </div>
+
+          <div class="form-group">
+            <label for="reg-dob" data-i18n="dob">Date of Birth</label>
+            <input type="date" id="reg-dob" required />
+          </div>
+
+          <div class="form-group">
+            <label for="reg-password" data-i18n="password">Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="reg-password" placeholder="••••••" required />
+              <button type="button" id="toggle-reg-pw" class="eye-btn" aria-label="Toggle Password">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-email" data-i18n="email">Email Address</label>
+            <input type="email" id="reg-email" placeholder="name@example.com" required />
+          </div>
+
+          <div id="register-error" class="error-msg" style="display:none;"></div>
+
+          <button type="submit" id="register-submit-btn" class="btn-primary-pill" data-i18n="register_btn">Create &amp; Sync Account</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 4. MAIN APPLICATION SHELL -->
+    <div id="main-app" class="screen main-app">
+      <!-- Top Header with Brand, Sync Status & Top-Right 3-Line Menu -->
+      <header class="app-header">
+        <div class="header-left">
+          <span class="header-brand">Monify</span>
+          <span id="sync-badge" class="sync-pill num-font" title="Google Sheets Sync Status">● Sheets Synced</span>
+        </div>
+        <div class="header-right">
+          <button type="button" id="travel-mode-quick-badge" class="travel-chip" style="display:none;">✈ Travel ON</button>
+          <button type="button" id="hamburger-btn" class="hamburger-btn" aria-label="Settings Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+
+        <!-- Dropdown Settings Menu (Edit Account, 6 Languages, Sync, Logout) -->
+        <div id="settings-dropdown" class="settings-dropdown" style="display:none;">
+          <div class="dropdown-user-info">
+            <strong id="menu-user-fullname">Monify Tester</strong>
+            <span class="num-font" id="menu-user-meta">User_ID: #1 · @monify</span>
+          </div>
+          <div class="dropdown-divider"></div>
+          <button type="button" id="open-edit-account-btn" class="dropdown-item">
+            <span>👤</span> <span data-i18n="edit_account">Edit Account</span>
+          </button>
+          <div class="dropdown-lang-section">
+            <label class="dropdown-label" data-i18n="language">Language (6 Languages)</label>
+            <div class="lang-grid">
+              <button type="button" class="lang-chip" data-lang="en">English</button>
+              <button type="button" class="lang-chip" data-lang="ko">한국어</button>
+              <button type="button" class="lang-chip" data-lang="ru">Русский</button>
+              <button type="button" class="lang-chip" data-lang="vi">Tiếng Việt</button>
+              <button type="button" class="lang-chip" data-lang="be">Беларуская</button>
+              <button type="button" class="lang-chip" data-lang="uz">Oʻzbekcha</button>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <button type="button" id="manual-sync-btn" class="dropdown-item">
+            <span>🔄</span> <span data-i18n="sync_now">Sync Google Sheets &amp; FX</span>
+          </button>
+          <button type="button" id="logout-btn" class="dropdown-item danger-text">
+            <span>🚪</span> <span data-i18n="logout">Log Out</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable Tab Viewport -->
+      <main id="tab-viewport" class="tab-viewport">
+        <!-- ==================== TAB 1: HOME ==================== -->
+        <section id="tab-home" class="tab-pane active">
+          <!-- 1. Dual-Balance Total Asset Card (Allowed Gradient 1) -->
+          <div class="card hero-asset-card">
+            <div class="hero-top-row">
+              <span class="hero-label" data-i18n="total_net_worth">TOTAL NET WORTH (STABLECOIN-INDEXED)</span>
+              <div class="currency-switcher" id="base-currency-switcher">
+                <button type="button" class="curr-pill active" data-curr="KRW">KRW</button>
+                <button type="button" class="curr-pill" data-curr="USD">USD</button>
+                <button type="button" class="curr-pill" data-curr="VND">VND</button>
+                <button type="button" class="curr-pill" data-curr="USDT">USDT</button>
+              </div>
+            </div>
+
+            <div class="hero-balance-row">
+              <h1 id="total-asset-display" class="hero-amount num-font">₩ 24,598,000</h1>
+            </div>
+
+            <div class="hero-sub-row">
+              <span id="stablecoin-equiv-display" class="num-font">≈ 17,824.64 USDT (1 USDT = ₩1,380)</span>
+              <button type="button" id="refresh-fx-btn" class="mini-refresh-btn num-font">↻ FX Live</button>
+            </div>
+
+            <div class="hero-breakdown-pills num-font">
+              <span id="liquid-sum-pill">Wallets: ₩5,498,000</span>
+              <span id="savings-sum-pill">Savings: ₩19,100,000</span>
+            </div>
+          </div>
+
+          <!-- Quick Action Row -->
+          <div class="quick-actions-row">
+            <button type="button" id="open-add-tx-btn" class="action-pill primary">
+              <span>+</span> <span data-i18n="log_tx">Add Expense / Income</span>
+            </button>
+            <button type="button" id="open-add-wallet-btn" class="action-pill secondary">
+              <span>+</span> <span data-i18n="add_wallet">Add Wallet</span> (<span id="wallet-count-badge" class="num-font">5/6</span>)
+            </button>
+          </div>
+
+          <!-- Wallets List (Max 6, separated by currency) -->
+          <div class="section-header">
+            <h3 data-i18n="my_wallets">Multi-Currency Wallets</h3>
+            <span id="wallet-slot-text" class="badge-thistle num-font">5 / 6 Slots Used</span>
+          </div>
+          <div id="wallets-list" class="cards-stack"></div>
+
+          <!-- 2. Open Banking & Savings Deposits (with D-Day & Auto-Roll into Total) -->
+          <div class="section-header">
+            <h3 data-i18n="bank_savings">Bank Savings &amp; Deposits</h3>
+            <button type="button" id="open-add-saving-btn" class="btn-xs-pill">+ Add Deposit</button>
+          </div>
+          <div id="savings-list" class="cards-stack"></div>
+
+          <!-- 3. Visa Balance Guard (Soft-Lock & Alert) -->
+          <div class="card velvet-card">
+            <div class="card-header-row">
+              <div>
+                <span class="eyebrow-light">IMMIGRATION COMPLIANCE</span>
+                <h3 class="text-snow" data-i18n="visa_guard">Visa Balance Guard</h3>
+              </div>
+              <button type="button" id="edit-visa-guard-btn" class="btn-snow-pill num-font">Edit Limit</button>
+            </div>
+            <p class="card-desc-light" id="visa-guard-desc">
+              Protected minimum reserve for Visa extension (D-2 / E-7 / F-2).
+            </p>
+            <div class="progress-track-dark">
+              <div id="visa-progress-bar" class="progress-fill-powder" style="width: 85%;"></div>
+            </div>
+            <div class="stats-pair-row num-font">
+              <span>Locked Min: <strong id="visa-min-display">₩10,000,000</strong></span>
+              <span>Available Liquid: <strong id="visa-avail-display">₩15,498,000</strong></span>
+            </div>
+            <div id="visa-alert-banner" class="alert-strip safe num-font">
+              ✓ Safe: Above Visa minimum threshold by ₩5,498,000
+            </div>
+          </div>
+
+          <!-- 4. FX $50,000 Annual Remittance Limit & May Tax Radar -->
+          <div class="card dark-card">
+            <div class="card-header-row">
+              <div>
+                <span class="eyebrow-powder">KOREA FX &amp; TAX LAW</span>
+                <h3 class="text-snow" data-i18n="fx_radar">FX $50,000 Limit &amp; Tax Radar</h3>
+              </div>
+              <button type="button" id="log-remittance-limit-btn" class="btn-powder-pill num-font">+ Log FX</button>
+            </div>
+            <div class="progress-track-dark">
+              <div id="fx-limit-bar" class="progress-fill-powder" style="width: 34%;"></div>
+            </div>
+            <div class="stats-pair-row num-font">
+              <span>Used YTD: <strong id="fx-used-display">$17,200</strong></span>
+              <span>Remaining: <strong id="fx-rem-display">$32,800 / $50,000</strong></span>
+            </div>
+            <div class="tax-reminder-box">
+              <span class="tax-pill">MAY TAX</span>
+              <span class="text-snow">3.3% Freelance Withholding &amp; Comprehensive Income Tax (종합소득세) filing window: May 1 – May 31.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 2: TRANSFER ==================== -->
+        <section id="tab-transfer" class="tab-pane">
+          <div class="section-header top-pad">
+            <h2 data-i18n="transfer_hub">Cross-Border &amp; Split</h2>
+            <span class="badge-powder num-font">0% Hidden Markup</span>
+          </div>
+
+          <!-- Sub-nav pills inside Transfer -->
+          <div class="sub-tabs-row">
+            <button type="button" class="sub-tab-btn active" data-subtab="remit-panel">1-Tap Compare</button>
+            <button type="button" class="sub-tab-btn" data-subtab="qr-panel">Multi-FX QR</button>
+            <button type="button" class="sub-tab-btn" data-subtab="split-panel">Bill Split</button>
+            <button type="button" class="sub-tab-btn" data-subtab="atm-panel">ATM &amp; FX</button>
+          </div>
+
+          <!-- 5. 1-Tap International Remittance Comparison -->
+          <div id="remit-panel" class="sub-panel active">
+            <div class="card">
+              <label class="field-label">You Send (Source Wallet)</label>
+              <div class="input-combo-row">
+                <input type="number" id="remit-send-amount" value="1000000" min="1000" class="num-font big-num-input" />
+                <select id="remit-from-curr" class="curr-select num-font">
+                  <option value="KRW">KRW (₩)</option>
+                  <option value="USD">USD ($)</option>
+                </select>
+              </div>
+              <div class="swap-divider">
+                <span>↓ Real-Time Mid-Market &amp; Stablecoin Bridge</span>
+                <select id="remit-to-curr" class="curr-select num-font">
+                  <option value="VND">Receive VND (₫)</option>
+                  <option value="USD">Receive USD ($)</option>
+                  <option value="USDT">Receive USDT</option>
+                  <option value="RUB">Receive RUB (₽)</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="remit-providers-list" class="cards-stack"></div>
+          </div>
+
+          <!-- 6. Multi-Currency QR Pay (P2P) -->
+          <div id="qr-panel" class="sub-panel">
+            <div class="card center-card">
+              <span class="eyebrow-velvet">MY PERSONAL MONIFY QR</span>
+              <h3 id="qr-owner-name">@monify (User_ID #1)</h3>
+              <div class="qr-box">
+                <canvas id="my-qr-canvas" width="180" height="180"></canvas>
+              </div>
+              <p class="muted-text">Friends scan to pay in KRW while you receive USDT, USD, or VND instantly.</p>
+            </div>
+
+            <div class="card">
+              <h3>Simulate Scan &amp; Instant P2P Send</h3>
+              <div class="form-group">
+                <label>Recipient Monify ID / Scanned Code</label>
+                <input type="text" id="qr-recipient-input" value="monify://pay?to=dasha_minsk&id=2" />
+              </div>
+              <div class="grid-2-col">
+                <div class="form-group">
+                  <label>Sender Pays (KRW)</label>
+                  <input type="number" id="qr-send-krw" value="50000" class="num-font" />
+                </div>
+                <div class="form-group">
+                  <label>Recipient Gets</label>
+                  <select id="qr-receive-curr" class="num-font">
+                    <option value="USDT">USDT (Stablecoin)</option>
+                    <option value="VND">VND (₫)</option>
+                    <option value="USD">USD ($)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="quote-preview num-font" id="qr-conversion-preview">
+                Recipient receives: <strong>36.23 USDT</strong> (0 KRW fee)
+              </div>
+              <button type="button" id="execute-qr-pay-btn" class="btn-primary-pill">Confirm QR Transfer</button>
+            </div>
+          </div>
+
+          <!-- 7. Multi-Currency Group Bill Split -->
+          <div id="split-panel" class="sub-panel">
+            <div class="card">
+              <div class="card-header-row">
+                <h3 id="split-group-title">Seoul BBQ &amp; Trip Group</h3>
+                <span class="badge-velvet num-font">Base: KRW</span>
+              </div>
+              <div id="split-expenses-list" class="mini-list"></div>
+
+              <div class="divider"></div>
+              <h4>Add Group Bill Item</h4>
+              <div class="grid-2-col">
+                <input type="text" id="split-payer" placeholder="Payer (e.g. Yumi)" />
+                <input type="text" id="split-item" placeholder="Item (e.g. Dinner)" />
+              </div>
+              <div class="grid-2-col mt-8">
+                <input type="number" id="split-amount" placeholder="Amount" class="num-font" />
+                <select id="split-curr" class="num-font">
+                  <option value="KRW">KRW</option>
+                  <option value="USD">USD</option>
+                  <option value="VND">VND</option>
+                </select>
+              </div>
+              <button type="button" id="add-split-item-btn" class="btn-secondary-pill mt-8">+ Add to Group Bill</button>
+            </div>
+
+            <div class="card dark-card">
+              <h3 class="text-snow">Settlement Matrix (Who Owes Whom)</h3>
+              <div id="split-settlement-output" class="settlement-list num-font"></div>
+            </div>
+          </div>
+
+          <!-- 8. Global ATM & Best-Rate FX Finder -->
+          <div id="atm-panel" class="sub-panel">
+            <div class="card no-pad-map">
+              <div id="atm-map" style="height: 220px; width: 100%; border-radius: 18px 18px 0 0;"></div>
+              <div class="map-caption">
+                <strong>Seoul 24/7 Global ATMs &amp; Top FX Booths</strong>
+                <span class="num-font">Myeongdong · Hongdae · Itaewon · Sinchon</span>
+              </div>
+            </div>
+            <div id="atm-locations-list" class="cards-stack mt-8"></div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 3: SPEND ==================== -->
+        <section id="tab-spend" class="tab-pane">
+          <div class="section-header top-pad">
+            <h2 data-i18n="spend_budget">6 Jars &amp; Cashflow</h2>
+            <button type="button" id="open-ocr-modal-btn" class="btn-primary-xs">📷 AI Scan Receipt</button>
+          </div>
+
+          <!-- 9. Customizable 6 Jars Budgeting -->
+          <div class="card">
+            <div class="card-header-row">
+              <div>
+                <h3>Customizable 6-Jars System</h3>
+                <p class="muted-text">Adjust names &amp; % splits (Must equal 100%)</p>
+              </div>
+              <span id="jars-total-pct" class="badge-powder num-font">Total: 100%</span>
+            </div>
+            <div id="six-jars-container" class="jars-grid"></div>
+            <button type="button" id="save-jars-btn" class="btn-secondary-pill mt-10">Save 6-Jars Allocation</button>
+          </div>
+
+          <!-- 10. Multi-Horizon Cashflow Analytics (1W | 1M | 3M | 6M | 1Y) -->
+          <div class="card">
+            <div class="card-header-row">
+              <h3>Cashflow Analytics</h3>
+              <div class="period-pills num-font" id="cashflow-period-tabs">
+                <button type="button" class="period-btn" data-period="1W">1W</button>
+                <button type="button" class="period-btn active" data-period="1M">1M</button>
+                <button type="button" class="period-btn" data-period="3M">3M</button>
+                <button type="button" class="period-btn" data-period="6M">6M</button>
+                <button type="button" class="period-btn" data-period="1Y">1Y</button>
+              </div>
+            </div>
+
+            <div class="cashflow-summary-row num-font">
+              <div class="cf-stat">
+                <span>Income</span>
+                <strong id="cf-income-val">₩3,200,000</strong>
+              </div>
+              <div class="cf-stat">
+                <span>Expense</span>
+                <strong id="cf-expense-val">₩1,890,000</strong>
+              </div>
+              <div class="cf-stat">
+                <span>Net Saved</span>
+                <strong id="cf-net-val">+₩1,310,000</strong>
+              </div>
+            </div>
+
+            <div id="cashflow-chart-bars" class="bar-chart-area"></div>
+            <div id="overspend-alert-box" class="alert-strip warn num-font">
+              ⚠ Spike detected: Dining &amp; Shopping exceeded weekly average by +18%.
+            </div>
+          </div>
+
+          <!-- 12. Cross-Border Subscriptions Manager -->
+          <div class="card">
+            <div class="card-header-row">
+              <div>
+                <h3>Recurring Subscriptions</h3>
+                <p class="muted-text">KRW &amp; USD auto-debits · 24h cancel alert</p>
+              </div>
+              <strong id="subs-monthly-total" class="num-font">₩58,400/mo</strong>
+            </div>
+            <div id="subscriptions-list" class="mini-list"></div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 4: GOALS ==================== -->
+        <section id="tab-goals" class="tab-pane">
+          <div class="section-header top-pad">
+            <h2 data-i18n="goals_travel">Goals &amp; Travel Mode</h2>
+            <button type="button" id="open-add-goal-btn" class="btn-primary-xs">+ New Goal</button>
+          </div>
+
+          <!-- 14. Home-Visit & Travel Mode Toggle Card -->
+          <div class="card deep-card">
+            <div class="card-header-row">
+              <div>
+                <span class="eyebrow-powder">EXPENSE ISOLATION ENGINE</span>
+                <h3 class="text-snow">Home-Visit &amp; Travel Mode</h3>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="travel-mode-toggle" />
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <p class="card-desc-light">
+              Isolates multi-currency trip spending into a separate ledger so home visits never distort your monthly Korea living budget.
+            </p>
+            <div id="travel-ledger-box" class="travel-ledger-box" style="display:none;">
+              <div class="stats-pair-row num-font">
+                <span>Trip Budget: <strong>$1,500 USD</strong></span>
+                <span>Trip Spent: <strong id="travel-spent-total">$320 USD</strong></span>
+              </div>
+              <div id="travel-tx-list" class="mini-list-dark mt-8"></div>
+            </div>
+          </div>
+
+          <!-- 13. Smart Financial Goals & Stablecoin Auto-Hedging -->
+          <div class="section-header">
+            <h3>Smart Goals &amp; FX Auto-Hedging</h3>
+          </div>
+          <div id="goals-list" class="cards-stack"></div>
+        </section>
+
+        <!-- ==================== TAB 5: AI ASSISTANT ==================== -->
+        <section id="tab-ai" class="tab-pane">
+          <div class="section-header top-pad">
+            <h2 data-i18n="ai_assistant">Monify AI Advisor</h2>
+            <span class="badge-velvet num-font">LIVE DIAGNOSTICS</span>
+          </div>
+
+          <!-- 15B. Expat Financial Health Score (0-100) -->
+          <div class="card hero-score-card">
+            <div class="score-ring-row">
+              <div class="score-circle num-font">
+                <span id="health-score-val">84</span>
+                <small>/ 100</small>
+              </div>
+              <div class="score-info">
+                <span class="eyebrow-powder">EXPAT FINANCIAL HEALTH</span>
+                <h3 class="text-snow" id="health-score-label">Strong &amp; Visa-Safe</h3>
+                <p class="card-desc-light">Calculated from your savings ratio, Visa reserve buffer, and 6-Jar discipline.</p>
+              </div>
+            </div>
+
+            <div class="ai-tips-box">
+              <strong>Weekly Actionable Insights:</strong>
+              <ul id="ai-weekly-tips">
+                <li>Your Visa reserve is 54% above the ₩10M threshold—consider moving ₩2M into a 3.2% deposit.</li>
+                <li>KRW/VND rate is 1.4% stronger than your 30-day average—favorable window for home remittance.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 15A. Target Exchange Rate Watcher -->
+          <div class="card">
+            <h3>Target Exchange Rate Alerts</h3>
+            <p class="muted-text">Get notified when KRW/VND or USD/KRW hits your desired threshold.</p>
+
+            <div class="rate-ticker-grid num-font">
+              <div class="ticker-box">
+                <span>1 KRW → VND</span>
+                <strong id="live-krw-vnd">18.42 ₫</strong>
+              </div>
+              <div class="ticker-box">
+                <span>1 USD → KRW</span>
+                <strong id="live-usd-krw">1,380 ₩</strong>
+              </div>
+              <div class="ticker-box">
+                <span>1 USDT → KRW</span>
+                <strong id="live-usdt-krw">1,382 ₩</strong>
+              </div>
+            </div>
+
+            <div class="grid-2-col mt-10">
+              <select id="alert-pair-select" class="num-font">
+                <option value="KRW_VND">KRW / VND (≥ Target)</option>
+                <option value="USD_KRW">USD / KRW (≤ Target)</option>
+              </select>
+              <input type="number" step="0.01" id="alert-target-input" placeholder="e.g. 18.50" class="num-font" />
+            </div>
+            <button type="button" id="add-rate-alert-btn" class="btn-primary-pill mt-8">+ Set Rate Alert</button>
+
+            <div id="rate-alerts-list" class="mini-list mt-10"></div>
+          </div>
+
+          <!-- Mandatory Legal Disclaimer -->
+          <div class="disclaimer-box">
+            <p data-i18n="ai_disclaimer">
+              * Disclaimer: Analysis and alerts are for informational reference only based on historical data and user-defined thresholds, and do not guarantee future exchange rate accuracy or legal compliance.
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <!-- Bottom Navigation Bar (5 Tabs) -->
+      <nav class="bottom-nav">
+        <button type="button" class="nav-item active" data-target="tab-home">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          <span data-i18n="nav_home">Home</span>
+        </button>
+        <button type="button" class="nav-item" data-target="tab-transfer">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          <span data-i18n="nav_transfer">Transfer</span>
+        </button>
+        <button type="button" class="nav-item" data-target="tab-spend">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+          <span data-i18n="nav_spend">Spend</span>
+        </button>
+        <button type="button" class="nav-item" data-target="tab-goals">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+          <span data-i18n="nav_goals">Goals</span>
+        </button>
+        <button type="button" class="nav-item" data-target="tab-ai">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span data-i18n="nav_ai">AI</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+    <!-- Add / Edit Wallet Modal -->
+    <div id="wallet-modal" class="modal-backdrop" style="display:none;">
+      <div class="modal-card">
+        <div class="card-header-row">
+          <h3 id="wallet-modal-title">Add Currency Wallet</h3>
+          <button type="button" class="close-modal-btn" data-close="wallet-modal">✕</button>
+        </div>
+        <form id="wallet-form">
+          <input type="hidden" id="edit-wallet-id" />
+          <div class="form-group">
+            <label>Wallet Name</label>
+            <input type="text" id="wallet-name-input" placeholder="e.g. KakaoBank / Cash EUR" required />
+          </div>
+          <div class="grid-2-col">
+            <div class="form-group">
+              <label>Type</label>
+              <select id="wallet-type-input">
+                <option value="Bank">Bank</option>
+                <option value="Cash">Cash</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Country</label>
+              <input type="text" id="wallet-country-input" placeholder="South Korea" required />
+            </div>
+          </div>
+          <div class="grid-2-col">
+            <div class="form-group">
+              <label>Currency (Separated)</label>
+              <select id="wallet-curr-input" class="num-font">
+                <option value="KRW">KRW</option>
+                <option value="VND">VND</option>
+                <option value="USD">USD</option>
+                <option value="USDT">USDT</option>
+                <option value="RUB">RUB</option>
+                <option value="UZS">UZS</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Initial Balance</label>
+              <input type="number" step="any" id="wallet-bal-input" placeholder="0" required class="num-font" />
+            </div>
+          </div>
+          <button type="submit" class="btn-primary-pill mt-10">Save Wallet</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit Savings Modal -->
+    <div id="saving-modal" class="modal-backdrop" style="display:none;">
+      <div class="modal-card">
+        <div class="card-header-row">
+          <h3 id="saving-modal-title">Bank Savings Deposit</h3>
+          <button type="button" class="close-modal-btn" data-close="saving-modal">✕</button>
+        </div>
+        <form id="saving-form">
+          <input type="hidden" id="edit-saving-id" />
+          <div class="form-group">
+            <label>Bank / Deposit Name</label>
+            <input type="text" id="saving-bank-input" required />
+          </div>
+          <div class="grid-2-col">
+            <div class="form-group">
+              <label>Country</label>
+              <input type="text" id="saving-country-input" required />
+            </div>
+            <div class="form-group">
+              <label>Currency</label>
+              <select id="saving-curr-input" class="num-font">
+                <option value="KRW">KRW</option>
+                <option value="VND">VND</option>
+                <option value="USD">USD</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid-2-col">
+            <div class="form-group">
+              <label>Principal Amount</label>
+              <input type="number" step="any" id="saving-amount-input" required class="num-font" />
+            </div>
+            <div class="form-group">
+              <label>Interest Rate (%/yr)</label>
+              <input type="number" step="0.1" id="saving-rate-input" value="3.0" required class="num-font" />
+            </div>
+          </div>
+          <div class="grid-2-col">
+            <div class="form-group">
+              <label>Start Date</label>
+              <input type="date" id="saving-start-input" required />
+            </div>
+            <div class="form-group">
+              <label>Maturity Date</label>
+              <input type="date" id="saving-end-input" required />
+            </div>
+          </div>
+          <button type="submit" class="btn-primary-pill mt-10">Save Deposit</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Add Transaction Modal -->
+    <div id="tx-modal" class="modal-backdrop" style="display:none;">
+      <div class="modal-card">
+        <div class="card-header-row">
+          <h3>Log Transaction</h3>
+          <button type="button" class="close-modal-btn" data-close="tx-modal">✕</button>
+        </div>
+        <form id="tx-form">
+          <div class="grid-2-col">
+            <div class="form-group">
+              <label>Type</label>
+              <select id="tx-type-input">
+                <option value="Expense">Expense (-)</option>
+                <option value="Income">Income (+)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Wallet</label>
+              <select id="tx-wallet-input"></select>
+            </div>
+          </div>
+          <div class="grid-2-col">
+            <div class="form-group">
+              <label>Amount</label>
+              <input type="number" step="any" id="tx-amount-input" required class="num-font" />
+            </div>
+            <div class="form-group">
+              <label>6-Jar Category</label>
+              <select id="tx-jar-input"></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Note / Merchant</label>
+            <input type="text" id="tx-note-input" placeholder="e.g. GS25 Convenience / Tuition" required />
+          </div>
+          <button type="submit" class="btn-primary-pill mt-10">Save &amp; Deduct Jar</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- AI Receipt Scanner Modal -->
+    <div id="ocr-modal" class="modal-backdrop" style="display:none;">
+      <div class="modal-card">
+        <div class="card-header-row">
+          <h3>AI Multilingual Receipt OCR</h3>
+          <button type="button" class="close-modal-btn" data-close="ocr-modal">✕</button>
+        </div>
+        <p class="muted-text">Upload Korean, English, or Vietnamese receipt photo to auto-extract amount &amp; Jar.</p>
+        <input type="file" id="receipt-file-input" accept="image/*" class="mt-8" />
+        <div class="ocr-presets mt-8">
+          <button type="button" class="btn-xs-pill ocr-sample-btn" data-sample="gs25">Sample: GS25 Seoul (₩12,400)</button>
+          <button type="button" class="btn-xs-pill ocr-sample-btn" data-sample="pho">Sample: Phở Hà Nội (145,000₫)</button>
+        </div>
+        <div id="ocr-scan-status" class="scan-box mt-10" style="display:none;">
+          <div class="scan-line"></div>
+          <p class="num-font">Scanning receipt text &amp; currency...</p>
+        </div>
+        <div id="ocr-result-box" class="mt-10" style="display:none;">
+          <div class="grid-2-col">
+            <input type="text" id="ocr-merchant" />
+            <input type="number" id="ocr-amount" class="num-font" />
+          </div>
+          <div class="grid-2-col mt-8">
+            <select id="ocr-curr" class="num-font">
+              <option value="KRW">KRW</option>
+              <option value="VND">VND</option>
+              <option value="USD">USD</option>
+            </select>
+            <select id="ocr-jar"></select>
+          </div>
+          <button type="button" id="confirm-ocr-save-btn" class="btn-primary-pill mt-8">Confirm &amp; Log Expense</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Account Modal -->
+    <div id="edit-account-modal" class="modal-backdrop" style="display:none;">
+      <div class="modal-card">
+        <div class="card-header-row">
+          <h3 data-i18n="edit_account">Edit Account Profile</h3>
+          <button type="button" class="close-modal-btn" data-close="edit-account-modal">✕</button>
+        </div>
+        <form id="edit-account-form">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="edit-acc-fullname" required />
+          </div>
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" id="edit-acc-dob" required />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="edit-acc-email" required />
+          </div>
+          <button type="submit" class="btn-primary-pill mt-10">Update Profile</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Add Financial Goal Modal -->
+    <div id="goal-modal" class="modal-backdrop" style="display:none;">
+      <div class="modal-card">
+        <div class="card-header-row">
+          <h3>Create Smart FX Goal</h3>
+          <button type="button" class="close-modal-btn" data-close="goal-modal">✕</button>
+        </div>
+        <form id="goal-form">
+          <div class="form-group">
+            <label>Goal Title</label>
+            <input type="text" id="goal-title-input" placeholder="e.g. Fall Semester Tuition / Jeonse Deposit" required />
+          </div>
+          <div class="grid-2-col">
+            <div class="form-group">
+              <label>Target Amount</label>
+              <input type="number" id="goal-target-input" placeholder="5000000" required class="num-font" />
+            </div>
+            <div class="form-group">
+              <label>Currency</label>
+              <select id="goal-curr-input" class="num-font">
+                <option value="KRW">KRW</option>
+                <option value="USD">USD</option>
+                <option value="VND">VND</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Deadline</label>
+            <input type="date" id="goal-deadline-input" required />
+          </div>
+          <button type="submit" class="btn-primary-pill mt-10">Create Goal</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-banner" class="toast-banner"></div>
   </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="./config.js"></script>
+  <!-- Libraries: Leaflet & QRCode -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <!-- Main Application Script -->
   <script src="./app.js"></script>
 </body>
 </html>
