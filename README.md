@@ -1,12 +1,14 @@
-# Monify v2 — My Finance Manager (MISA Money Keeper Style)
+# Monify — My Finance Manager (v2)
 
-## Updates in v2
-- **Default Language: English** with built-in language switcher (**English / 한국어 / Tiếng Việt**) inside **Account & Language** (and on Login screen).
-- **Auto-Connected Google Sheets**: Hardcoded your Google Apps Script Web App URL directly in `config.js` & `app.js` (manual URL entry removed).
-- **Zero Horizontal Overflow**: Rebuilt the Transfer sub-navigation into a strict 4-column segmented bar (`Compare | QR Pay | Split | ATM/FX`) and enforced `minmax(0, 1fr)` grids so every button fits cleanly inside any phone screen.
-- **MISA Money Keeper Minimalist Redesign**: Clean Velvet Purple header, crisp Snow cards with soft dividers, compact horizontal list rows for Wallets/Savings/Transactions, strictly adhering to the 6-color Monify palette.
+Clean Mobile-First Fintech Web App inspired by **MISA Money Keeper** & **TOSS**, built strictly on the 6-color Monify palette (`#FAF9F8`, `#150811`, `#AAAAFF`, `#623B70`, `#531245`, `#BEB8CD`) and ready for **GitHub Pages**.
 
-## Quick Deploy to GitHub Pages
-1. Extract all files (`index.html`, `styles.css`, `app.js`, `config.js`) into your repository root alongside `logo1.png`.
-2. Push to `main` branch — GitHub Pages updates automatically.
-3. Demo account: **`monify`** / **`828282`**.
+## Highlights
+- **Default English UI** with instant 6-language switcher inside **Settings (top right)**: English, 한국어, Русский, Tiếng Việt, Oʻzbekcha, Беларуская.
+- **Pre-connected Backend**: Google Apps Script Web App URL is hardcoded directly in `config.js` and `app.js` (silent background sync + instant `localStorage` fallback). No manual Google Sheets sync UI in the app.
+- **iPhone-Fitted Layout**: All buttons, cards, and segmented controls stay strictly inside the iPhone frame with `>=15px` margins on all four sides.
+- **Top-Right Controls**: Refresh FX and Settings/Account buttons positioned cleanly at the top right.
+
+## Deploy on GitHub Pages
+1. Upload `index.html`, `styles.css`, `app.js`, `config.js`, and your `logo1.png` to the root of your GitHub repository (`main` branch).
+2. Go to **Settings → Pages** → Branch: **`main`**, Folder: **`/ (root)`** → **Save**.
+3. Sign in with demo account `monify` / `828282` or register a new account.
