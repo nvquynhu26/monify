@@ -233,77 +233,21 @@ nav button.on {
   font-weight: 600;
 }
 
+/* Tìm và thay thế đoạn .card và .wallet-card trong style.css */
 .card {
   background: var(--s);
   border: 1px solid var(--t);
-  border-radius: 20px;
-  padding: 14px;
+  border-radius: 14px;
+  padding: 14px 16px;
   margin-bottom: 12px;
 }
 
-.dark { background: var(--c); color: var(--s); border: 0; }
-.vel { background: var(--v); color: var(--s); border: 0; }
-.deep { background: var(--d); color: var(--s); border: 0; }
-.g1 { background: linear-gradient(135deg, var(--t), var(--s), var(--p)); border: 0; }
-
-.btn {
-  background: var(--p);
-  color: var(--c);
-  border: 0;
-  border-radius: 99px;
-  padding: 9px 16px;
-  font: inherit;
-  font-size: 13px;
-  cursor: pointer;
-  display: inline-block;
-  text-align: center;
-}
-
-.btn.sm-btn {
-  padding: 6px 12px;
-  font-size: 12px;
-}
-
-.btn.s { background: var(--v); color: var(--s); }
-.btn:disabled { background: var(--t); color: var(--v); cursor: not-allowed; }
-.vel .btn, .deep .btn, .dark .btn { background: var(--p); color: var(--c); }
-
-input, select, textarea {
-  width: 100%;
-  border: 1px solid var(--t);
-  border-radius: 12px;
-  padding: 10px;
-  font: inherit;
-  font-size: 13px;
-  background: var(--s);
-  color: var(--c);
-  margin: 4px 0;
-}
-
-input[type=range] {
-  padding: 0;
-  accent-color: var(--v);
-}
-
-h1 { font-size: 30px; }
-h2 { font-size: 15px; margin: 16px 0 8px; }
-a { color: var(--v); cursor: pointer; text-decoration: underline; }
-
-.row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 0;
-}
-
-/* Fix Wallet Card Overflow */
 .wallet-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  overflow: hidden;
+  gap: 12px;
+  padding: 12px 16px;
 }
 
 .wallet-left {
@@ -327,7 +271,7 @@ a { color: var(--v); cursor: pointer; text-decoration: underline; }
 
 .wallet-right {
   flex: 0 0 auto;
-  max-width: 52%;
+  max-width: 50%;
   text-align: right;
   min-width: 0;
 }
