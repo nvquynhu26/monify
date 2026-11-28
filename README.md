@@ -1,11 +1,20 @@
-# Monify — My Finance Manager (GitHub Pages Ready)
+# Monify — My Finance Manager
 
-## 1. Deploy to GitHub Pages
-1. Upload `index.html`, `styles.css`, `app.js`, and your `logo1.png` into the root folder of your GitHub repository.
-2. Go to **Settings -> Pages -> Build and deployment -> Source: Deploy from a branch (`main` / `/root`)**.
-3. Open your live GitHub Pages URL on mobile or desktop.
+## Chạy thử ngay
+Mở `index.html` (hoặc chạy GitHub Pages). Đăng nhập `monify` / `828282` — dữ liệu mẫu lưu trong localStorage.
+Đặt file logo của bạn tên **`logo1.png`** ở thư mục gốc (nếu thiếu, app hiện chữ "Monify").
 
-## 2. Demo Test Account
-- **Username:** `monify`
-- **Password:** `828282`
-- Preloaded with 5/6 multi-currency wallets (KRW, VND, USD) and 2 bank savings deposits (KRW 10,000,000 & VND 200,000,000).
+## Bật GitHub Pages
+1. Tạo repo, upload toàn bộ file (`index.html`, `style.css`, `app.js`, `config.js`, `logo1.png`).
+2. **Settings → Pages → Source: Deploy from a branch → `main` / `(root)` → Save**.
+3. Mở `https://<tên-bạn>.github.io/<tên-repo>/` sau ~1 phút.
+
+## Nối Google Sheets
+1. Tạo Google Sheet mới → **Extensions → Apps Script**, dán toàn bộ `apps-script/Code.gs`.
+2. **Deploy → New deployment → Web app**: Execute as *Me*, Who has access *Anyone* → Deploy → copy URL `/exec`.
+3. Dán URL vào `config.js`: `window.MONIFY_API = "https://script.google.com/macros/s/.../exec";`
+4. Các sheet (`Users`, `Wallets`, `Savings`, `Transactions`, `Budgets_6Jars`, `Goals_Subscriptions`) tự được tạo. Muốn dùng tài khoản `monify`, hãy đăng ký tài khoản này trong app trên Sheets (mật khẩu 828282).
+
+## Lưu ý
+- Tỷ giá, phí chuyển tiền, OCR hóa đơn hiện là **số/giả lập mẫu** (đổi bảng `R` trong `app.js` hoặc nối API thật).
+- Theo yêu cầu, mật khẩu đang lưu dạng chữ thường trong Sheet — nên băm (hash) trước khi dùng thật.
